@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Nette\Utils\Arrays;
 
 class LoginController extends Controller
 {
@@ -34,8 +35,8 @@ class LoginController extends Controller
 
             $user = User::where('email', $request->email)->first();
             $access_token = $user->createToken("API TOKEN")->plainTextToken;
-
-            return ApiResponse::success('User logged in successfully', $user, 200, $access_token);
+            $permissions = $user->getAllPermissions();
+            return ApiResponse::success('User logged in successfully', ['user' => $user, 'permissions' => $permissions], 200, $access_token);
         } catch (\Throwable $th) {
             return ApiResponse::error($request, $th->getMessage(), 500);
         }

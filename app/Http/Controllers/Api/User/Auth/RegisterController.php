@@ -22,7 +22,7 @@ class RegisterController extends Controller
             $validateUser = Validator::make($request->all(),[
                 'name' => 'required|max:30',
                 'email' => 'required|unique:App\Models\User,email',
-                'password' => 'required|confirmed',
+                'password' => 'required',
             ]);
             if($validateUser->fails()){
                 return ApiResponse::error('Validation error', $validateUser->errors(), 400);

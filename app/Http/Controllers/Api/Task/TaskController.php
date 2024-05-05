@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Task;
 
+use App\Events\SharedTask;
 use App\Http\Controllers\Controller;
 use App\Http\Utilities\ApiResponse;
 use App\Models\Task;
@@ -37,7 +38,7 @@ class TaskController extends Controller
             $validateTask = Validator::make($request->all(),[
                 'title' => 'required|max:190',
                 'description' => 'required|max:255',
-                'complete' => 'boolean',
+                'complete' => 'boolean'
             ]);
             if($validateTask->fails()){
                 return ApiResponse::error('Validation error', $validateTask->errors(), 400);
@@ -46,8 +47,9 @@ class TaskController extends Controller
                 'title' => $request->title,
                 'description' => $request->description,
                 'complete' => $request->complete,
-                'user' => Auth::user()->id
+                'user_id' => Auth::user()->id
             ]);
+            event(new SharedTask($task));
             return ApiResponse::success('Task Created Successfully', $task, 201);
         } catch (\Throwable $th) {
             return ApiResponse::error("Create operation failed", $th->getMessage(), 500);

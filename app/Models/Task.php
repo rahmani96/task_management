@@ -12,7 +12,7 @@ class Task extends Model
     protected $table = 'tasks';
 
     protected $fillable = [
-        'title', 'description'
+        'title', 'description',  'user_id'
     ];
 
     public function user() {
